@@ -121,7 +121,6 @@
                 `${years} ปี ${months} เดือน ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที`;
 
             checkAnniversary(totalDays, years, months, days);
-            showRandomMemory();
         }
 
         function checkAnniversary(totalDays, years, months, days) {
@@ -156,8 +155,15 @@
             memoryText.innerText = memories[randomIndex];
         }
 
+        // เรียกใช้ตัวนับเวลาทุกวินาที
         setInterval(updateTimer, 1000);
+
+        // เรียกใช้ข้อความความคิดถึงทุก 5 วินาที (5000 มิลลิวินาที)
+        setInterval(showRandomMemory, 5000);
+
+        // เรียกใช้ฟังก์ชันเริ่มต้น
         updateTimer();
+        showRandomMemory();
     </script>
 </body>
 </html>
