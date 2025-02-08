@@ -19,7 +19,6 @@
             color: white;
             margin: 0;
             overflow: hidden;
-            cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็น pointer */
         }
         .container {
             background: rgba(0, 0, 0, 0.7); /* พื้นหลังสีดำโปร่งใส */
@@ -29,8 +28,6 @@
             max-width: 600px;
             width: 90%;
             animation: fadeIn 2s ease-in-out;
-            position: relative;
-            z-index: 1;
         }
         h2 {
             margin-bottom: 20px;
@@ -56,14 +53,6 @@
             margin-top: 20px;
             animation: fadeIn 3s ease-in-out;
         }
-        .floating-name {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffcc00; /* สีเหลือง */
-            animation: float 5s ease-in-out infinite;
-            pointer-events: none; /* ไม่ให้ชื่อขัดขวางการคลิก */
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -72,9 +61,49 @@
             from { transform: translateY(-50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+
+        /* กำหนดตำแหน่งของชื่อที่จะเด้ง */
+        .namePopup {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            animation: popUp 1s ease, bounce 1s infinite; /* เพิ่มเอฟเฟ็กต์การกระโดด */
+            pointer-events: none; /* ไม่ให้รบกวนการคลิกอื่น */
+            opacity: 0;
+        }
+
+        @keyframes popUp {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -98,10 +127,12 @@
             "แล้วเจอกันใหม่นะ",
         ];
 
+        // รายชื่อพี่ๆ ที่จะเด้ง
         const names = [
-            "พี่Nadir", "Earth", "Fluke", "Arsia", "Hakeema", "Sabila", "Nicha", 
-            "Praewa", "Pround", "Pizza", "Jeng", "Tiger", "Folk", "Aris", 
-            "Victor", "Oh", "Kyla", "Nooknik", "Nut"
+            "พี่ Nadir", "พี่ Earth", "พี่ Fluke", "พี่ Arsia", "พี่ Hakeema", 
+            "พี่ Sabila", "พี่ Nicha", "พี่ Praewa", "พี่ Pround", "พี่ Pizza", 
+            "พี่ Jeng", "พี่ Tiger", "พี่ Folk", "พี่ Aris", "พี่ Victor", 
+            "พี่ Oh", "พี่ Kyla", "พี่ Nooknik", "พี่ Nut"
         ];
 
         function updateTimer() {
@@ -177,23 +208,23 @@
             memoryText.innerText = memories[randomIndex];
         }
 
-        // ฟังก์ชันสุ่มชื่อและแสดงผล
+        // ฟังก์ชันที่จะโชว์ชื่อแบบสุ่มเมื่อคลิก
         function showRandomName(event) {
+            const namePopup = document.createElement('div');
             const randomIndex = Math.floor(Math.random() * names.length);
-            const name = names[randomIndex];
+            namePopup.classList.add('namePopup');
+            namePopup.innerText = names[randomIndex];
 
-            const floatingName = document.createElement("div");
-            floatingName.className = "floating-name";
-            floatingName.innerText = name;
-            floatingName.style.left = `${event.clientX}px`;
-            floatingName.style.top = `${event.clientY}px`;
+            // กำหนดตำแหน่งที่คลิก
+            namePopup.style.left = `${event.clientX + 10}px`;
+            namePopup.style.top = `${event.clientY + 10}px`;
 
-            document.body.appendChild(floatingName);
+            document.body.appendChild(namePopup);
 
-            // ลบชื่อออกหลังจาก 3 วินาที
+            // ลบ popup หลังจาก 2 วินาที
             setTimeout(() => {
-                floatingName.remove();
-            }, 3000);
+                namePopup.remove();
+            }, 2000);
         }
 
         // เรียกใช้ตัวนับเวลาทุกวินาที
@@ -206,8 +237,8 @@
         updateTimer();
         showRandomMemory();
 
-        // เพิ่ม Event Listener สำหรับการคลิก
-        document.addEventListener("click", showRandomName);
+        // เพิ่ม event listener สำหรับคลิก
+        document.addEventListener('click', showRandomName);
     </script>
 </body>
 </html>
