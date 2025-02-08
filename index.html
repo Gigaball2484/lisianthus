@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นับเวลาตั้งแต่จบ ม.6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            font-family: 'Noto Sans Thai', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'); /* รูปภาพพื้นหลัง */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.7); /* พื้นหลังสีดำโปร่งใส */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+            animation: fadeIn 2s ease-in-out;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            animation: slideIn 1.5s ease-in-out;
+        }
+        #timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: slideIn 2s ease-in-out;
+        }
+        #anniversary {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffcc00; /* สีเหลือง */
+            animation: fadeIn 2.5s ease-in-out;
+        }
+        #memoryText {
+            font-size: 18px;
+            font-style: italic;
+            margin-top: 20px;
+            animation: fadeIn 3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>เวลาที่ผ่านไปตั้งแต่พี่ๆ Lisianthus จบ:</h2>
+        <p id="timer"></p>
+        <p id="anniversary"></p> <!-- แสดงวันครบรอบ -->
+        <p id="memoryText"></p> <!-- แสดงข้อความความคิดถึง -->
+    </div>
+
+    <script>
+        const memories = [
+            "คิดถึงวันเวลาที่เราเรียนด้วยกัน...",
+            "ความทรงจำดีๆ จะอยู่กับเราเสมอ 💖",
+            "ไม่ว่าเวลาจะผ่านไปแค่ไหน เรายังเป็นเพื่อนกันเสมอ",
+            "คิดถึงเสียงหัวเราะและความสนุกในห้องเรียน 😊",
+            "ทุกวันที่ผ่านไปคือความทรงจำที่งดงาม 🌟",
+            "เพื่อนแท้คือเพื่อนที่อยู่ด้วยกันไม่ว่าจะไกลแค่ไหน",
+            "คิดถึงทุกคนใน Lisianthus จังเลย 🥹"
+        ];
+
+        function updateTimer() {
+            const graduationDate = new Date("2025-02-04T00:00:00");
+            const now = new Date();
+
+            let years = now.getFullYear() - graduationDate.getFullYear();
+            let months = now.getMonth() - graduationDate.getMonth();
+            let days = now.getDate() - graduationDate.getDate();
+            let hours = now.getHours() - graduationDate.getHours();
+            let minutes = now.getMinutes() - graduationDate.getMinutes();
+            let seconds = now.getSeconds() - graduationDate.getSeconds();
+
+            if (seconds < 0) {
+                seconds += 60;
+                minutes--;
+            }
+            if (minutes < 0) {
+                minutes += 60;
+                hours--;
+            }
+            if (hours < 0) {
+                hours += 24;
+                days--;
+            }
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            if (months < 0) {
+                months += 12;
+                years--;
+            }
+
+            const totalDays = Math.floor((now - graduationDate) / (1000 * 60 * 60 * 24));
+
+            document.getElementById("timer").innerText = 
+                `${years} ปี ${months} เดือน ${days} วัน ${hours} ชั่วโมง ${minutes} นาที ${seconds} วินาที`;
+
+            checkAnniversary(totalDays, years, months, days);
+            showRandomMemory();
+        }
+
+        function checkAnniversary(totalDays, years, months, days) {
+            const anniversaryText = document.getElementById("anniversary");
+            anniversaryText.innerText = "";
+
+            function showAnniversaryMessage(message) {
+                anniversaryText.innerText = `🎉 ${message}`;
+            }
+
+            if (totalDays === 50) {
+                showAnniversaryMessage("ครบรอบ 50 วัน!");
+                return;
+            }
+            if (totalDays === 100) {
+                showAnniversaryMessage("ครบรอบ 100 วัน!");
+                return;
+            }
+            if (days === 0 && months > 0 && months < 12) {
+                showAnniversaryMessage(`ครบรอบ ${months} เดือน!`);
+                return;
+            }
+            if (months === 0 && days === 0 && years > 0) {
+                showAnniversaryMessage(`ครบรอบ ${years} ปีแล้ว!`);
+                return;
+            }
+        }
+
+        function showRandomMemory() {
+            const memoryText = document.getElementById("memoryText");
+            const randomIndex = Math.floor(Math.random() * memories.length);
+            memoryText.innerText = memories[randomIndex];
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
